@@ -10,12 +10,11 @@ from django.utils.timezone import now
 # - Any other fields you would like to include in car make model
 # - __str__ method to print a car make object
 class CarMake(models.Model):
-    name = models.CharField(null= False, max_length=30, default='')
-    description = models.CharField(null= False, max_length=300, default='')
+    name = models.CharField(max_length=30, null=False)
+    description = models.CharField(max_length=300)
 
     def __str__(self):
-        return 'Name:' + self.name + ',' + \
-            'Description:' + self.description
+        return self.name + " | " + str(self.description)
 
 
 # <HINT> Create a Car Model model `class CarModel(models.Model):`:
@@ -27,19 +26,19 @@ class CarMake(models.Model):
 # - Any other fields you would like to include in car model
 # - __str__ method to print a car make object
 class CarModel(models.Model):
-    SEDAN = 'sedan'
-    SUV = 'suv'
-    WAGON = 'wagon'
-    OTHERS = 'others'
-    CAR_CHOICES = [(SEDAN, "Sedan"), (SUV, 'SUV'), (WAGON, 'Wagon'), (OTHERS, 'Others')]
-    carmake = models.ForeignKey(CarMake, null= True, on_delete=models.CASCADE)
-    name = models.CharField(null= False, max_length=30, default='')
-    dealerid = models.IntegerField(null=True)
-    cartype = models.CharField(null= False, max_length=20, choices= CAR_CHOICES, default=SEDAN)
-    year = models.DateField(null= True)
+    
+    dealer_id = models.IntegerField(null=True)
+    name = models.CharField(max_length=200, null=True)
+    
+    SEDAN, SUV, WAGON, TRUCK, VAN, BUSINESS = 'sedan', 'suv', 'wagon', 'truck', 'van', 'business'
+    TYPES = [SEDAN, SUV, WAGON, TRUCK, VAN, BUSINESS]
 
+    car_make = models.ForeignKey(CarMake, on_delete=models.CASCADE, null=True)
+    type = models.CharField(choices=[(x, x) for x in TYPES], max_length=10, default=SEDAN)
+    year = models.DateField(null=True)
+    
     def __str__(self):
-        return 'Name ' + self.name
+        return f"{self.car_make} {self.type} {self.year}"
 
 
 # <HINT> Create a plain Python class `CarDealer` to hold dealer data
